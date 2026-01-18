@@ -133,3 +133,124 @@ Some editors show warnings for Tailwind directives like `@tailwind base;`.
 
 - The project still runs fine because Tailwind is processed by PostCSS during the Vite build.
 - If you want to hide the warning, install the **Tailwind CSS IntelliSense** extension (VS Code) or disable the CSS "unknown at rules" warning in your editor settings.
+
+### 
+Common Issues Faced During Development (and Fixes)
+1) Environment variables not loading
+
+Symptom:
+GROQ_API_KEY environment variable is missing or empty at runtime.
+
+Cause:
+Only .env.example was edited, but the actual .env file used by the application was not created or updated.
+
+Fix:
+
+Create the real environment file used at runtime:
+
+Server: root/.env (or server/.env, depending on setup)
+
+Ensure it contains:
+
+GROQ_API_KEY=your_real_key
+GROQ_MODEL=llama-3.1-8b-instant
+
+
+Tip:
+Keep .env.example with placeholder values only—never commit real API keys.
+
+2) Wrong WebSocket URL or port mismatch
+
+Symptom:
+UI shows Disconnected, or messages fail to send.
+
+Cause:
+VITE_WS_URL points to the wrong endpoint or port, or the backend server is not running.
+
+Fix:
+In client/.env:
+
+VITE_WS_URL=ws://localhost:8080/ws
+
+
+Confirm the server logs show:
+
+WebSocket endpoint running at ws://localhost:8080/ws
+
+3) Groq model “decommissioned” errors
+
+Symptom:
+model_decommissioned errors from the Groq API.
+
+Cause:
+Using deprecated Groq model names (e.g., llama3-70b-8192).
+
+Fix:
+Switch to supported models such as:
+
+llama-3.1-8b-instant (default, fast)
+
+llama-3.3-70b-versatile (larger, higher quality)
+
+4) Streaming-related UI issues
+
+Symptoms:
+
+AI messages appear duplicated
+
+Streaming never stops and input remains disabled
+
+Cause:
+Streaming chunks are not correctly associated with a single AI message, or the final completion event is missing.
+
+Fix:
+Ensure the backend always sends events in this order:
+
+ai_start → ai_chunk → ai_done
+
+
+Even short responses must emit ai_done.
+
+5) WebSocket disconnects after sleep or network changes
+
+Symptom:
+Chat shows Disconnected after laptop sleep or Wi-Fi change.
+
+Cause:
+Browsers automatically drop inactive WebSocket connections.
+
+Fix:
+
+Implement basic reconnection logic with backoff (implemented)
+
+Display real-time connection status in the UI (implemented)
+
+6) Tailwind CSS warnings in editor
+
+Symptom:
+Unknown at rule @tailwind warnings in index.css.
+
+Cause:
+Some editors do not recognize Tailwind CSS directives.
+
+Fix:
+
+The application still builds and runs correctly
+
+Install Tailwind CSS IntelliSense (VS Code) or disable CSS lint warnings
+
+7) GitHub push and secret management issues
+
+Symptom:
+
+GitHub rejects authentication
+
+Risk of accidentally committing API keys
+
+Fix:
+
+Use a GitHub Personal Access Token (PAT) instead of a password
+
+Ensure .env files are included in .gitignore
+
+Commit only .env.example files with placeholder values
