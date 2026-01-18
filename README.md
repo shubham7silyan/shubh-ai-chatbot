@@ -118,7 +118,7 @@ This keeps the UI feeling “live” instead of waiting for one big response.
 
 ## Time Spent
 
-- About: _____ hours
+- About: 8 hours
 
 ## Notes
 
