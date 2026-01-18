@@ -1,0 +1,17 @@
+{
+  "name": "shubh-ai-chatbot",
+  "private": true,
+  "author": "Shubham Silyan (GitHub: shubham7silyan)",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c blue,green \"npm run dev -w server\" \"npm run dev -w client\"",
+    "start": "npm run start -w server",
+    "build": "npm run build -w client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
